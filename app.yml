@@ -1,0 +1,8 @@
+---
+- name: Check date
+  hosts: azure
+  become: yes
+
+  tasks:
+    - name: So check the date
+      command: date

@@ -1,0 +1,20 @@
+---
+- name: Install Apache.
+  hosts: azure
+  become: true
+
+
+  vars:
+   download_dir: /etc/apache2
+
+  handlers:
+   - import_tasks: handlers/apache.yml
+
+
+  pre_tasks:
+   - name: Update apt cache if needed
+     apt: update_cache=true cache_valid_time=3600
+
+  tasks:
+   - import_tasks: tasks/apache.yml
+- import_playbook: app.yml

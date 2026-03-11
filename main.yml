@@ -1,0 +1,36 @@
+---
+- name: Install Apache.
+  hosts: azure
+  become: true
+
+
+  vars:
+   download_dir: /etc/apache2
+
+  handlers:
+   - import_tasks: handlers/apache.yml
+
+  pre_tasks:
+   - name: Update apt cache if needed
+     apt: update_cache=true cache_valid_time=3600
+
+  tasks:
+   - name: Ensure Apache is installed.
+     apt:
+      name: apache2
+      state: present
+
+   - name: Copy test config file.
+     copy:
+      src: /tmp/test.conf
+      dest: "{{ download_dir }}/test.conf"
+      remote_src: yes
+     notify: restart apache
+
+   - name: Ensure Apache is running and starts at boot
+     service:
+      name: apache2
+      state: started
+      enabled: true
+
+
